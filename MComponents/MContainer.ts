@@ -20,8 +20,13 @@ class MContainer extends MComponent{
     add(component:MComponent,layoutPosition?:any):void{
         
         this.getElement();
-        this.components.push(component);
-        this.addComponents();
+        if(this.layout == null){
+            this.components.push(component);
+            this.addComponents();
+        }else{
+            this.layout.add(component);
+        }
+        
     }
     
     addComponents():void{
@@ -33,6 +38,7 @@ class MContainer extends MComponent{
                 for(var c in this.components){
                     
                     var component = this.components[c];
+                    component.setIndex(c);
                     this.appendChild(component,c); 
                 }    
             }
@@ -42,25 +48,9 @@ class MContainer extends MComponent{
     appendChild(component:MComponent):void;
     appendChild(component:MComponent,index:number):void;
     appendChild(component:MComponent,index?:any):void{
-        if(index){
-            var id = component.getId().toLowerCase();
-            var i = (parseInt(index)+1);
-            
-            var idSections:any = id.split('-');
-            var index:any = (idSections.length - 1);
-            var pattern = /^\d$/
-            
-            if(!pattern.test(idSections[index])){
-                var newId = id + "-" + i;
-                component.setId(newId);
-                component.getElement().setAttribute("id",newId);
-            }
-        }
-        if(this.layout != null){
-            this.layout.add(component);
-        }else{
-            this.htmlElement.appendChild(component.getElement());
-        }
+        
+        this.htmlElement.appendChild(component.getElement());
+        
     }
 
     setLayout(layout:MLayout):void{

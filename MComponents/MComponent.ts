@@ -17,7 +17,7 @@ class MComponent implements IComponent{
     
     id:string = null;
     cssClass:string = null;
-    
+    index:any = null;
     getCssClass():string{
         return this.cssClass;    
     }
@@ -36,6 +36,21 @@ class MComponent implements IComponent{
     
     setId(id:string):void{
         this.id = id;
+    }
+
+    setIndex(index:string):void{
+
+        if(this.index == null){
+            this.index = (parseInt(index)+1);
+        }
+        var pattern = /[0-9]/
+        if(!pattern.test(this.getId())){
+            if (this.index != null) {
+                this.setId(this.getId() + "-" + this.index);
+                this.htmlElement.setAttribute('id', this.id);
+            }
+        } 
+
     }
     
     

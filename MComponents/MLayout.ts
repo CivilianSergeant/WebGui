@@ -17,31 +17,17 @@ class MLayout extends MComponent{
     add(component:MComponent,align?:any):void{
         this.getElement();
         this.components.push(component);
-        this.renderComponents();
+        this.addComponents();
     }
 
     appendChild(component:MComponent):void;
     appendChild(component:MComponent,index:number):void;
     appendChild(component:MComponent,index?:any):void{
-        if(index){
-            var id = component.getId().toLowerCase();
-            var i = (parseInt(index)+1);
-                    
-            var idSections:any  = id.split('-' );
-            var x:any = (idSections.length - 1);
-            var pattern = /^\d$/
-                    
-            if (!pattern.test(idSections[index])){
-                var newId = id + "-" + i;
-                component.setId(newId);
-                component.getElement().setAttribute("id",newId);
-            }
-        }
             
         this.htmlElement.appendChild(component.getElement());
     }
 
-    renderComponents():void{
+    addComponents():void{
         
         if(this.components.length>0){
             
@@ -49,6 +35,7 @@ class MLayout extends MComponent{
                 for(var c in this.components){
                     
                     var component = this.components[c];
+                    component.setIndex(c);
                     this.appendChild(component,c); 
                 }    
             }

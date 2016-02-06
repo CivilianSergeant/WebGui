@@ -11,12 +11,12 @@
             
             var panel         = null;
             
-            var username = new MTextField("Username");
+            var username = new MTextLabel("Username","label",panel);
             var email = new MTextField("E-mail");
             // initialize panels
             panel = new MPanel("panel");
-            panel.setLayout(new MFlowLayout());
-            
+           // panel.setLayout(new MFlowLayout());
+            console.log(panel);
             panel.show();
             panel.add(username);
             panel.add(email)

@@ -3,6 +3,7 @@ var MComponent = (function () {
         this.unit = "px";
         this.id = null;
         this.cssClass = null;
+        this.index = null;
     }
     MComponent.prototype.getCssClass = function () {
         return this.cssClass;
@@ -19,6 +20,19 @@ var MComponent = (function () {
     };
     MComponent.prototype.setId = function (id) {
         this.id = id;
+    };
+    MComponent.prototype.setIndex = function (index) {
+        if (this.index == null) {
+            this.index = (parseInt(index) + 1);
+        }
+        var pattern = /[0-9]/;
+        if (!pattern.test(this.getId())) {
+            console.log('y');
+            if (this.index != null) {
+                this.setId(this.getId() + "-" + this.index);
+                this.htmlElement.setAttribute('id', this.id);
+            }
+        }
     };
     return MComponent;
 })();
@@ -129,38 +143,27 @@ var MContainer = (function (_super) {
     }
     MContainer.prototype.add = function (component, layoutPosition) {
         this.getElement();
-        this.components.push(component);
-        this.addComponents();
+        if (this.layout == null) {
+            this.components.push(component);
+            this.addComponents();
+        }
+        else {
+            this.layout.add(component);
+        }
     };
     MContainer.prototype.addComponents = function () {
         if (this.components.length > 0) {
             if (this.htmlElement != undefined) {
                 for (var c in this.components) {
                     var component = this.components[c];
+                    component.setIndex(c);
                     this.appendChild(component, c);
                 }
             }
         }
     };
     MContainer.prototype.appendChild = function (component, index) {
-        if (index) {
-            var id = component.getId().toLowerCase();
-            var i = (parseInt(index) + 1);
-            var idSections = id.split('-');
-            var index = (idSections.length - 1);
-            var pattern = /^\d$/;
-            if (!pattern.test(idSections[index])) {
-                var newId = id + "-" + i;
-                component.setId(newId);
-                component.getElement().setAttribute("id", newId);
-            }
-        }
-        if (this.layout != null) {
-            this.layout.add(component);
-        }
-        else {
-            this.htmlElement.appendChild(component.getElement());
-        }
+        this.htmlElement.appendChild(component.getElement());
     };
     MContainer.prototype.setLayout = function (layout) {
         this.layout = layout;
@@ -233,28 +236,17 @@ var MLayout = (function (_super) {
     MLayout.prototype.add = function (component, align) {
         this.getElement();
         this.components.push(component);
-        this.renderComponents();
+        this.addComponents();
     };
     MLayout.prototype.appendChild = function (component, index) {
-        if (index) {
-            var id = component.getId().toLowerCase();
-            var i = (parseInt(index) + 1);
-            var idSections = id.split('-');
-            var x = (idSections.length - 1);
-            var pattern = /^\d$/;
-            if (!pattern.test(idSections[index])) {
-                var newId = id + "-" + i;
-                component.setId(newId);
-                component.getElement().setAttribute("id", newId);
-            }
-        }
         this.htmlElement.appendChild(component.getElement());
     };
-    MLayout.prototype.renderComponents = function () {
+    MLayout.prototype.addComponents = function () {
         if (this.components.length > 0) {
             if (this.htmlElement != undefined) {
                 for (var c in this.components) {
                     var component = this.components[c];
+                    component.setIndex(c);
                     this.appendChild(component, c);
                 }
             }
