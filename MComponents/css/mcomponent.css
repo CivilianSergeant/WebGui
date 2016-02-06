@@ -1,0 +1,31 @@
+html,body,h1,h2,h3,h4,h5,h6,ul,li,p{
+    margin:0;padding:0;
+}
+body{
+    font-family:sans-serif;
+    margin:2px;
+}
+.panel{
+    border:1px solid skyblue;
+}
+
+.title-bar{
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e0f3fa+0,d8f0fc+50,b8e2f6+51,b6dffd+100;Shape+2+Style */
+background: #e0f3fa; /* Old browsers */
+background: -moz-linear-gradient(top,  #e0f3fa 0%, #d8f0fc 50%, #b8e2f6 51%, #b6dffd 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  #e0f3fa 0%,#d8f0fc 50%,#b8e2f6 51%,#b6dffd 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  #e0f3fa 0%,#d8f0fc 50%,#b8e2f6 51%,#b6dffd 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0f3fa', endColorstr='#b6dffd',GradientType=0 ); /* IE6-9 */
+border-bottom:1px solid skyblue;
+}
+
+.panel > .title-bar > .text-label{
+    font-size:.9em;
+    padding:4px;
+}
+
+.container{
+    
+    min-height:100px;
+    background-color:#e0f3fa;
+}

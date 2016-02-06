@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MyComponents</title>
+        <!--<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" />-->
+        <link rel="stylesheet" href="MComponents/css/mcomponent.css" type="text/css" />
+    </head>
+    <body>
+        <script type="text/javascript" src="MComponents/MComponents.js"></script>
+        <script type="text/javascript">
+            
+            var panel         = null;
+            
+            var username = new MTextField("Username");
+            var email = new MTextField("E-mail");
+            // initialize panels
+            panel = new MPanel("panel");
+            panel.show();
+            panel.add(username);
+            panel.add(email)
+             
+            panel.setTitleBarText("Hello");
+            
+          
+        </script>
+    </body>
+</html>
