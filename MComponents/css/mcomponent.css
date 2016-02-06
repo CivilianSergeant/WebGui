@@ -25,7 +25,29 @@ border-bottom:1px solid skyblue;
 }
 
 .container{
-    
-    min-height:100px;
+    min-height:10px;
     background-color:#e0f3fa;
+}
+.container:after{
+    
+}
+
+.fl-layout{
+    padding:10px;
+}
+.fl-layout.horizontal{
+    
+}
+.fl-layout.horizontal *{
+   margin:5px;
+}
+
+.fl-layout.vertical *{
+   margin:5px;
+   display:block;
+}
+
+.text-field{
+    border:1px solid #ccc;
+    padding:2px;
 }

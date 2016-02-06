@@ -5,10 +5,12 @@ class MContainer extends MComponent{
     context:MComponent = null;
     layout:any=null;
     
-    constructor(context:MComponent){
+    constructor(context:MComponent);
+    constructor(context:MComponent,name:string);
+    constructor(context:MComponent,name?:any){
         super();
         this.context = context;
-        this.cssClass = 'container';
+        this.cssClass = (name)? name : 'container';
         this.id = (context)? context.getId()+"-"+this.cssClass : this.cssClass;
         this.htmlElement = document.createElement('div');
         this.htmlElement.setAttribute("id",this.id);
@@ -54,8 +56,11 @@ class MContainer extends MComponent{
     }
 
     setLayout(layout:MLayout):void{
-        this.layout = layout;
-        this.htmlElement.appendChild(this.layout.getElement());
+        if(this.layout == null){
+            this.layout = layout;
+            this.htmlElement.appendChild(this.layout.getElement());
+        }
+        
     }
     
    

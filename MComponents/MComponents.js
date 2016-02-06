@@ -27,7 +27,6 @@ var MComponent = (function () {
         }
         var pattern = /[0-9]/;
         if (!pattern.test(this.getId())) {
-            console.log('y');
             if (this.index != null) {
                 this.setId(this.getId() + "-" + this.index);
                 this.htmlElement.setAttribute('id', this.id);
@@ -102,40 +101,15 @@ var MTextLabel = (function (_super) {
     };
     return MTextLabel;
 })(MComponent);
-var MTextField = (function (_super) {
-    __extends(MTextField, _super);
-    function MTextField(placeholder, value, context) {
-        _super.call(this);
-        this.context = null;
-        this.value = null;
-        this.context = context;
-        this.cssClass = 'text-field';
-        this.id = (context) ? context.getId() + "-" + this.cssClass : this.cssClass;
-        this.htmlElement = document.createElement('input');
-        this.htmlElement.setAttribute("id", this.id);
-        this.htmlElement.setAttribute("class", this.cssClass);
-        this.htmlElement.setAttribute("type", "text");
-        this.htmlElement.setAttribute("placeholder", placeholder);
-        if (value) {
-            this.value = value;
-            this.htmlElement.setAttribute("value", value);
-        }
-    }
-    MTextField.prototype.setOnChangeListener = function (itemChanged) {
-        this.htmlElement = document.getElementById(this.id);
-        this.htmlElement.addEventListener("keyup", itemChanged, false);
-    };
-    return MTextField;
-})(MComponent);
 var MContainer = (function (_super) {
     __extends(MContainer, _super);
-    function MContainer(context) {
+    function MContainer(context, name) {
         _super.call(this);
         this.components = [];
         this.context = null;
         this.layout = null;
         this.context = context;
-        this.cssClass = 'container';
+        this.cssClass = (name) ? name : 'container';
         this.id = (context) ? context.getId() + "-" + this.cssClass : this.cssClass;
         this.htmlElement = document.createElement('div');
         this.htmlElement.setAttribute("id", this.id);
@@ -166,8 +140,10 @@ var MContainer = (function (_super) {
         this.htmlElement.appendChild(component.getElement());
     };
     MContainer.prototype.setLayout = function (layout) {
-        this.layout = layout;
-        this.htmlElement.appendChild(this.layout.getElement());
+        if (this.layout == null) {
+            this.layout = layout;
+            this.htmlElement.appendChild(this.layout.getElement());
+        }
     };
     return MContainer;
 })(MComponent);
@@ -222,6 +198,31 @@ var MPanel = (function (_super) {
     };
     return MPanel;
 })(MComponent);
+var MTextField = (function (_super) {
+    __extends(MTextField, _super);
+    function MTextField(placeholder, value, context) {
+        _super.call(this);
+        this.context = null;
+        this.value = null;
+        this.context = context;
+        this.cssClass = 'text-field';
+        this.id = (context) ? context.getId() + "-" + this.cssClass : this.cssClass;
+        this.htmlElement = document.createElement('input');
+        this.htmlElement.setAttribute("id", this.id);
+        this.htmlElement.setAttribute("class", this.cssClass);
+        this.htmlElement.setAttribute("type", "text");
+        this.htmlElement.setAttribute("placeholder", placeholder);
+        if (value) {
+            this.value = value;
+            this.htmlElement.setAttribute("value", value);
+        }
+    }
+    MTextField.prototype.setOnChangeListener = function (itemChanged) {
+        this.htmlElement = document.getElementById(this.id);
+        this.htmlElement.addEventListener("keyup", itemChanged, false);
+    };
+    return MTextField;
+})(MComponent);
 var MLayout = (function (_super) {
     __extends(MLayout, _super);
     function MLayout() {
@@ -256,10 +257,18 @@ var MLayout = (function (_super) {
 })(MComponent);
 var MFlowLayout = (function (_super) {
     __extends(MFlowLayout, _super);
-    function MFlowLayout() {
+    function MFlowLayout(align) {
         _super.call(this);
         this.cssClass = 'fl-layout';
+        if (align == MFlowLayout.HORIZONTAL) {
+            this.cssClass = this.cssClass + ' horizontal';
+        }
+        else if (align == MFlowLayout.VERTICAL) {
+            this.cssClass = this.cssClass + ' vertical';
+        }
         this.htmlElement.setAttribute("class", this.cssClass);
     }
+    MFlowLayout.HORIZONTAL = 1;
+    MFlowLayout.VERTICAL = 2;
     return MFlowLayout;
 })(MLayout);

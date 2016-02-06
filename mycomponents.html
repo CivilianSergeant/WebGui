@@ -9,18 +9,29 @@
         <script type="text/javascript" src="MComponents/MComponents.js"></script>
         <script type="text/javascript">
             
-            var panel         = null;
+            var panel = null;
             
-            var username = new MTextLabel("Username","label",panel);
-            var email = new MTextField("E-mail");
+            var usernameLbl = new MTextLabel("Username","label",panel);
+            var usernameTxt = new MTextField("Username");
+            var emailLbl = new MTextLabel("E-mail","label",panel);
+            var emailTxt = new MTextField("E-mail");
             // initialize panels
             panel = new MPanel("panel");
-           // panel.setLayout(new MFlowLayout());
-            console.log(panel);
+            var nameContainer = new MContainer(panel.getContainer(),'username');
+            var emailContainer = new MContainer(panel.getContainer(),'email');
+            nameContainer.setLayout(new MFlowLayout(MFlowLayout.HORIZONTAL));
+            emailContainer.setLayout(new MFlowLayout(MFlowLayout.HORIZONTAL));
+            //console.log(panel);
             panel.show();
-            panel.add(username);
-            panel.add(email)
-             
+            
+            nameContainer.add(usernameLbl);
+            nameContainer.add(usernameTxt);
+            
+            emailContainer.add(emailLbl);
+            emailContainer.add(emailTxt);
+            
+            panel.add(nameContainer);
+            panel.add(emailContainer);
             panel.setTitleBarText("Hello");
             
           
