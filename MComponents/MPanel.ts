@@ -48,7 +48,11 @@ class MPanel extends MComponent{
     removeTitleBar():void{
         this.titleBar.getElement().remove();
     }
-    
+
+    setLayout(layout:MLayout):void{
+        this.container.setLayout(layout);
+    }
+
     setTitleBar(titleBar:MTitleBar):void{
         this.htmlElement.insertBefore(titleBar.getElement(),this.container.getElement());
     }

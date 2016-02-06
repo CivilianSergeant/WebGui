@@ -26,7 +26,6 @@ class MComponent implements IComponent{
         var documentHTMLElement = document.getElementById(this.id);
         if(documentHTMLElement != null){
             this.htmlElement = document.getElementById(this.id);
-            console.log('here',this.id);
         }
         return this.htmlElement;
     }

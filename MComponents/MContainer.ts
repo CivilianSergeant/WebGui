@@ -56,8 +56,16 @@ class MContainer extends MComponent{
                 component.getElement().setAttribute("id",newId);
             }
         }
-        
-        this.htmlElement.appendChild(component.getElement());
+        if(this.layout != null){
+            this.layout.add(component);
+        }else{
+            this.htmlElement.appendChild(component.getElement());
+        }
+    }
+
+    setLayout(layout:MLayout):void{
+        this.layout = layout;
+        this.htmlElement.appendChild(this.layout.getElement());
     }
     
    

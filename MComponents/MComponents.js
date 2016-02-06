@@ -11,12 +11,8 @@ var MComponent = (function () {
         var documentHTMLElement = document.getElementById(this.id);
         if (documentHTMLElement != null) {
             this.htmlElement = document.getElementById(this.id);
-            console.log('here', this.id);
         }
         return this.htmlElement;
-    };
-    MComponent.prototype.getNode = function () {
-        this.htmlElement = document.getElementById(this.id);
     };
     MComponent.prototype.getId = function () {
         return this.id;
@@ -65,6 +61,58 @@ var MTitleBar = (function (_super) {
     };
     return MTitleBar;
 })(MComponent);
+var MTextLabel = (function (_super) {
+    __extends(MTextLabel, _super);
+    function MTextLabel(value, type, context) {
+        _super.call(this);
+        this.value = null;
+        this.type = null;
+        this.context = null;
+        this.context = context;
+        this.cssClass = 'text-label';
+        this.id = (context != undefined) ? context.getId() + "-" + this.cssClass : this.cssClass;
+        this.value = value;
+        this.type = type;
+        this.htmlElement = document.createElement(type);
+        this.htmlElement.setAttribute("id", this.id);
+        this.htmlElement.setAttribute("class", this.cssClass);
+        this.htmlElement.innerHTML = this.value;
+    }
+    MTextLabel.prototype.getText = function () {
+        return this.value;
+    };
+    MTextLabel.prototype.setText = function (value) {
+        this.value = value;
+        this.getElement();
+        this.htmlElement.innerHTML = value;
+    };
+    return MTextLabel;
+})(MComponent);
+var MTextField = (function (_super) {
+    __extends(MTextField, _super);
+    function MTextField(placeholder, value, context) {
+        _super.call(this);
+        this.context = null;
+        this.value = null;
+        this.context = context;
+        this.cssClass = 'text-field';
+        this.id = (context) ? context.getId() + "-" + this.cssClass : this.cssClass;
+        this.htmlElement = document.createElement('input');
+        this.htmlElement.setAttribute("id", this.id);
+        this.htmlElement.setAttribute("class", this.cssClass);
+        this.htmlElement.setAttribute("type", "text");
+        this.htmlElement.setAttribute("placeholder", placeholder);
+        if (value) {
+            this.value = value;
+            this.htmlElement.setAttribute("value", value);
+        }
+    }
+    MTextField.prototype.setOnChangeListener = function (itemChanged) {
+        this.htmlElement = document.getElementById(this.id);
+        this.htmlElement.addEventListener("keyup", itemChanged, false);
+    };
+    return MTextField;
+})(MComponent);
 var MContainer = (function (_super) {
     __extends(MContainer, _super);
     function MContainer(context) {
@@ -107,36 +155,18 @@ var MContainer = (function (_super) {
                 component.getElement().setAttribute("id", newId);
             }
         }
-        this.htmlElement.appendChild(component.getElement());
+        if (this.layout != null) {
+            this.layout.add(component);
+        }
+        else {
+            this.htmlElement.appendChild(component.getElement());
+        }
+    };
+    MContainer.prototype.setLayout = function (layout) {
+        this.layout = layout;
+        this.htmlElement.appendChild(this.layout.getElement());
     };
     return MContainer;
-})(MComponent);
-var MTextLabel = (function (_super) {
-    __extends(MTextLabel, _super);
-    function MTextLabel(value, type, context) {
-        _super.call(this);
-        this.value = null;
-        this.type = null;
-        this.context = null;
-        this.context = context;
-        this.cssClass = 'text-label';
-        this.id = (context != undefined) ? context.getId() + "-" + this.cssClass : this.cssClass;
-        this.value = value;
-        this.type = type;
-        this.htmlElement = document.createElement(type);
-        this.htmlElement.setAttribute("id", this.id);
-        this.htmlElement.setAttribute("class", this.cssClass);
-        this.htmlElement.innerHTML = this.value;
-    }
-    MTextLabel.prototype.getText = function () {
-        return this.value;
-    };
-    MTextLabel.prototype.setText = function (value) {
-        this.value = value;
-        this.getElement();
-        this.htmlElement.innerHTML = value;
-    };
-    return MTextLabel;
 })(MComponent);
 var MPanel = (function (_super) {
     __extends(MPanel, _super);
@@ -175,6 +205,9 @@ var MPanel = (function (_super) {
     MPanel.prototype.removeTitleBar = function () {
         this.titleBar.getElement().remove();
     };
+    MPanel.prototype.setLayout = function (layout) {
+        this.container.setLayout(layout);
+    };
     MPanel.prototype.setTitleBar = function (titleBar) {
         this.htmlElement.insertBefore(titleBar.getElement(), this.container.getElement());
     };
@@ -186,28 +219,55 @@ var MPanel = (function (_super) {
     };
     return MPanel;
 })(MComponent);
-var MTextField = (function (_super) {
-    __extends(MTextField, _super);
-    function MTextField(placeholder, value, context) {
+var MLayout = (function (_super) {
+    __extends(MLayout, _super);
+    function MLayout() {
         _super.call(this);
-        this.context = null;
-        this.value = null;
-        this.context = context;
-        this.cssClass = 'text-field';
-        this.id = (context) ? context.getId() + "-" + this.cssClass : this.cssClass;
-        this.htmlElement = document.createElement('input');
+        this.cssClass = 'layout';
+        this.id = this.cssClass;
+        this.components = [];
+        this.htmlElement = document.createElement('div');
         this.htmlElement.setAttribute("id", this.id);
         this.htmlElement.setAttribute("class", this.cssClass);
-        this.htmlElement.setAttribute("type", "text");
-        this.htmlElement.setAttribute("placeholder", placeholder);
-        if (value) {
-            this.value = value;
-            this.htmlElement.setAttribute("value", value);
-        }
     }
-    MTextField.prototype.setOnChangeListener = function (itemChanged) {
-        this.htmlElement = document.getElementById(this.id);
-        this.htmlElement.addEventListener("keyup", itemChanged, false);
+    MLayout.prototype.add = function (component, align) {
+        this.getElement();
+        this.components.push(component);
+        this.renderComponents();
     };
-    return MTextField;
+    MLayout.prototype.appendChild = function (component, index) {
+        if (index) {
+            var id = component.getId().toLowerCase();
+            var i = (parseInt(index) + 1);
+            var idSections = id.split('-');
+            var x = (idSections.length - 1);
+            var pattern = /^\d$/;
+            if (!pattern.test(idSections[index])) {
+                var newId = id + "-" + i;
+                component.setId(newId);
+                component.getElement().setAttribute("id", newId);
+            }
+        }
+        this.htmlElement.appendChild(component.getElement());
+    };
+    MLayout.prototype.renderComponents = function () {
+        if (this.components.length > 0) {
+            if (this.htmlElement != undefined) {
+                for (var c in this.components) {
+                    var component = this.components[c];
+                    this.appendChild(component, c);
+                }
+            }
+        }
+    };
+    return MLayout;
 })(MComponent);
+var MFlowLayout = (function (_super) {
+    __extends(MFlowLayout, _super);
+    function MFlowLayout() {
+        _super.call(this);
+        this.cssClass = 'fl-layout';
+        this.htmlElement.setAttribute("class", this.cssClass);
+    }
+    return MFlowLayout;
+})(MLayout);
